@@ -114,9 +114,6 @@ Invoke-RestMethod -Uri "http://localhost:8000/health" | ConvertTo-Json -Depth 10
 
 ## E. Automated tests — BEFORE the 3,000-key workload
 
-**Why this order matters:** The uploaded transcript shows 3,000 keys were migrated successfully (3 → 2 → 1 → 3), but the subsequent integration test timed out on `POST /_admin/membership` with a 120-second timeout. The test itself cycles through 1 → 2 → 3 → 2 → 1 stores, triggering migration of the existing 3,000 keys. Run integration tests on a **fresh, isolated, empty deployment** *before* loading 3,000 keys. Changing the order in this guide does **not** empty your current deployment, which already has 3,000 keys. Do not delete its volumes to make tests pass.
-
-**If you are continuing your current populated deployment:** Do **not** run the integration test yet. First run the unit tests below, then use a separate isolated test deployment (different Compose project, volumes and host port), or investigate and optimize the migration path. A 120-second timeout is not a passing test; don't claim otherwise. Contact me with `compose.yaml` and `router.py` if you need exact isolated-deployment commands.
 
 Install development dependencies:
 
@@ -265,7 +262,7 @@ The benchmark should produce 1-, 2-, and 3-node measurements. Check for errors a
 Stop-Transcript
 ```
 
-Now upload `HW3_Complete_PowerShell_History.txt` and `results/benchmark.csv` to ChatGPT for the final evidence review and report synchronization. The transcript includes actual commands and their output; PowerShell `Start-Transcript` does not retroactively capture commands run before it was started.
+
 
 
 ## Note on the November 21 failed run
