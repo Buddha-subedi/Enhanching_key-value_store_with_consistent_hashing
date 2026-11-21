@@ -27,13 +27,13 @@ The benchmark tested 1, 2, and 3 active backend nodes, with 1,200 timed operatio
 
 The original benchmark transcript did not contain pytest output. In a later user-shared Windows PowerShell session, `python -m pytest -q test_hash_ring.py test_integration_hw3.py` reported **4 passed in 113.76s**. This is user-reported execution evidence, not a fresh independent execution in this review. Earlier standalone CRUD, concurrency, and volume persistence tests were completed separately.
 
-## 6. Measured distributed results (November 20, 2026)
+## 6. Measured distributed results (latest CSV in November 21, 2026 upload)
 
 | Active nodes | Mean throughput (ops/s) | Mean latency (ms) | Mean P95 latency (ms) | Errors | Throughput vs. 1 node |
 |---|---:|---:|---:|---:|---:|
-| 1 | 95.61 | 167.17 | 386.94 | 0 | 1.000x |
-| 2 | 97.54 | 162.77 | 384.97 | 0 | 1.020x |
-| 3 | 82.94 | 197.45 | 447.69 | 0 | 0.867x |
+| 1 | 99.33 | 159.79 | 359.94 | 0 | 1.000x |
+| 2 | 97.45 | 163.14 | 383.88 | 0 | 0.981x |
+| 3 | 94.02 | 169.76 | 368.69 | 0 | 0.947x |
 
 All nine distributed benchmark repetitions reported 1,200 successful operations and **zero errors**. Two nodes gave the highest average throughput and lowest average latency, but the improvement over one node was small. Three nodes performed worse on average under this workload. These are measurements from one host, not evidence that adding nodes always decreases performance.
 
@@ -41,22 +41,23 @@ All nine distributed benchmark repetitions reported 1,200 successful operations 
 
 | Nodes | Repeat | Successful | Errors | Throughput (ops/s) | Mean (ms) | P50 (ms) | P95 (ms) | P99 (ms) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 1 | 1200 | 0 | 99.751 | 158.984 | 123.986 | 378.458 | 628.119 |
-| 1 | 2 | 1200 | 0 | 102.799 | 154.499 | 122.789 | 380.724 | 621.781 |
-| 1 | 3 | 1200 | 0 | 84.283 | 188.033 | 152.101 | 401.634 | 639.703 |
-| 2 | 1 | 1200 | 0 | 95.907 | 165.522 | 124.473 | 386.688 | 606.313 |
-| 2 | 2 | 1200 | 0 | 98.105 | 161.699 | 125.982 | 362.489 | 597.184 |
-| 2 | 3 | 1200 | 0 | 98.606 | 161.089 | 131.293 | 405.736 | 640.278 |
-| 3 | 1 | 1200 | 0 | 63.876 | 248.840 | 217.329 | 574.633 | 871.781 |
-| 3 | 2 | 1200 | 0 | 89.942 | 176.692 | 152.856 | 395.728 | 606.694 |
-| 3 | 3 | 1200 | 0 | 94.997 | 166.807 | 135.287 | 372.717 | 620.392 |
+| 1 | 1 | 1200 | 0 | 99.223 | 160.066 | 124.622 | 345.679 | 655.468 |
+| 1 | 2 | 1200 | 0 | 98.83 | 160.651 | 126.646 | 385.496 | 673.593 |
+| 1 | 3 | 1200 | 0 | 99.935 | 158.666 | 126.344 | 348.656 | 580.4 |
+| 2 | 1 | 1200 | 0 | 100.618 | 157.827 | 128.554 | 344.755 | 571.103 |
+| 2 | 2 | 1200 | 0 | 91.387 | 173.373 | 129.803 | 420.772 | 720.47 |
+| 2 | 3 | 1200 | 0 | 100.34 | 158.209 | 125.381 | 386.124 | 634.053 |
+| 3 | 1 | 1200 | 0 | 84.407 | 188.244 | 170.067 | 357.3 | 581.696 |
+| 3 | 2 | 1200 | 0 | 102.403 | 154.801 | 125.314 | 363.1 | 591.803 |
+| 3 | 3 | 1200 | 0 | 95.25 | 166.242 | 124.707 | 385.677 | 592.968 |
 
 ### Interpretation
 
-- **1 → 2 nodes:** throughput changed by **+2.02%**, and mean latency changed by **-2.63%**.
-- **1 → 3 nodes:** throughput changed by **-13.25%**, and mean latency changed by **+18.11%**.
-- Three-node repeat 1 was notably slower (63.876 ops/s, mean latency 248.840 ms) than repeats 2 and 3 (89.942 and 94.997 ops/s), indicating run-to-run variability. Possible causes include resource contention, router overhead, or background activity; these were not independently measured.
-- The benchmark demonstrates end-to-end performance under a fixed 16-worker workload, **not** storage balance, fault tolerance, replication, or multi-host horizontal scaling.
+- **1 → 2 nodes:** throughput -1.89%; mean latency +2.09%.
+- **1 → 3 nodes:** throughput -5.35%; mean latency +6.24%.
+- The three-node results varied across repeats; do not infer statistically reliable scaling from three repeats on one host.
+- All nine runs completed 1,200 timed operations each with zero errors. These measurements include router overhead but exclude setup, membership migration, seeding, and cleanup.
+
 
 ### Generated artifacts
 
@@ -114,3 +115,8 @@ This supports the requirement that keys are reasonably evenly distributed among 
 ## 11. Reproducible PowerShell evidence
 
 Use `HW3_HISTORY_COMMANDS.md` to capture a fresh transcript showing startup, CRUD, 1→2→3 membership, 3,000-key distribution, retrieval, scale-down/up data preservation, tests, and the original benchmark artifacts. Running a new benchmark overwrites `results/benchmark.csv`; make a backup before doing so.
+
+
+## Latest benchmark data provenance (November 21 ZIP)
+
+The figures and tables above are calculated directly from the uploaded `results/benchmark.csv` (nine runs). The included PNG plots should be regenerated with `python plot_hw3.py` if CSV data changes. The 3,000-key distribution and four passing tests are separately recorded observations, not measurements from the benchmark CSV.

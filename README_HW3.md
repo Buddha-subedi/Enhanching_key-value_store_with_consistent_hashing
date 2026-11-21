@@ -32,17 +32,17 @@ Then change nodes to `["kv1","kv2","kv3"]` to scale to three, or `["kv1"]` to sc
 
 **Security:** change `ROUTER_ADMIN_TOKEN` in a real deployment. The default token is only for local coursework. All backends share a private Docker network. Do not expose backend ports publicly.
 
-## Measured results (November 20, 2026)
+## Measured results (latest CSV in November 21, 2026 upload)
 
 Command: `python benchmark_hw3.py --operations 1200 --workers 16 --repeats 3`.
 
 | Active nodes | Mean throughput (ops/s) | Mean latency (ms) | Mean P95 latency (ms) | Errors | Throughput vs. 1 node |
 |---|---:|---:|---:|---:|---:|
-| 1 | 95.61 | 167.17 | 386.94 | 0 | 1.000x |
-| 2 | 97.54 | 162.77 | 384.97 | 0 | 1.020x |
-| 3 | 82.94 | 197.45 | 447.69 | 0 | 0.867x |
+| 1 | 99.33 | 159.79 | 359.94 | 0 | 1.000x |
+| 2 | 97.45 | 163.14 | 383.88 | 0 | 0.981x |
+| 3 | 94.02 | 169.76 | 368.69 | 0 | 0.947x |
 
-All 10,800 timed operations succeeded (3 repeats × 1,200 operations × 3 configurations). Two nodes performed marginally better than one; three nodes performed worse on average in this single-host test. See [REPORT_HW3.md](REPORT_HW3.md) for the full nine-run table, interpretation, limitations, and environment.
+All 10,800 timed operations succeeded (3 repeats × 1,200 operations × 3 configurations). Two nodes changed throughput by -1.89% relative to one; three nodes changed throughput by -5.35%. These are small-sample single-host results. See [REPORT_HW3.md](REPORT_HW3.md) for the full nine-run table, interpretation, limitations, and environment.
 
 ### Performance plots
 
@@ -74,3 +74,8 @@ The ring **partitions** data. It does not replicate data or provide automatic fa
 ## Direct key distribution check (November 21 follow-up)
 
 With all three nodes active, 3,000 PUTs completed with zero reported failures. The router distribution endpoint returned **kv1: 986 (32.87%), kv2: 962 (32.07%), kv3: 1,052 (35.07%)**, total **3,000**. Ideal equal share is 1,000 keys each. This verifies reasonably balanced physical storage for the tested keys; it is not a throughput result. See `results/validation_observations.md`. For a complete reproducible command-by-command Windows PowerShell transcript, follow `HW3_HISTORY_COMMANDS.md`.
+
+
+## Latest benchmark data provenance (November 21 ZIP)
+
+The figures and tables above are calculated directly from the uploaded `results/benchmark.csv` (nine runs). The included PNG plots should be regenerated with `python plot_hw3.py` if CSV data changes. The 3,000-key distribution and four passing tests are separately recorded observations, not measurements from the benchmark CSV.

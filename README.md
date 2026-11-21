@@ -243,3 +243,18 @@ The build log indicates Docker used cached layers for dependency installation an
 - [x] Run the persistence verification and capture its output for claiming verified persistent data
 
 **Educational scope:** The Flask development server is intended for this local assignment, not for deployment as a public production service. The project has no authentication or HTTPS; keep the port restricted to localhost.
+
+
+## Assignment 3 extension — latest results (November 21, 2026 upload)
+
+The original sections above describe the standalone Assignment 2 service on port 8080. Homework 3 adds a consistent-hashing router on port **8000** and three independently persisted backends, managed with `docker compose up -d --build`. See [README_HW3.md](README_HW3.md) for setup and [REPORT_HW3.md](REPORT_HW3.md) for the experiment and limitations.
+
+The latest `results/benchmark.csv` reports 16 workers, 1,200 operations per repeat, three repeats per active-node configuration, and zero errors in all 10,800 timed requests. Arithmetic means of the per-run metrics:
+
+| Active nodes | Mean throughput (ops/s) | Mean latency (ms) | Mean P95 latency (ms) | Errors | Throughput vs. 1 node |
+|---|---:|---:|---:|---:|---:|
+| 1 | 99.33 | 159.79 | 359.94 | 0 | 1.000x |
+| 2 | 97.45 | 163.14 | 383.88 | 0 | 0.981x |
+| 3 | 94.02 | 169.76 | 368.69 | 0 | 0.947x |
+
+The benchmark is an 80% GET / 20% PUT workload by default; it does not measure failover or replication. The separate distribution verification reported 3,000 successful PUTs and physical counts kv1=986, kv2=962, kv3=1,052. For original execution evidence, see `results/validation_observations.md` and `HW3_Complete_PowerShell_History.txt`.
