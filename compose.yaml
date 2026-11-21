@@ -1,0 +1,35 @@
+services:
+  kv1:
+    build: .
+    environment: {KV_HOST: 0.0.0.0, KV_DB: /data/kv_store.db}
+    volumes: [kv1data:/data]
+    networks: [kvnet]
+  kv2:
+    build: .
+    environment: {KV_HOST: 0.0.0.0, KV_DB: /data/kv_store.db}
+    volumes: [kv2data:/data]
+    networks: [kvnet]
+  kv3:
+    build: .
+    environment: {KV_HOST: 0.0.0.0, KV_DB: /data/kv_store.db}
+    volumes: [kv3data:/data]
+    networks: [kvnet]
+  router:
+    build:
+      context: .
+      dockerfile: Dockerfile.router
+    environment:
+      ACTIVE_NODES: ${ACTIVE_NODES:-1}
+      ROUTER_ADMIN_TOKEN: ${ROUTER_ADMIN_TOKEN:-local-dev-token}
+      KV1_URL: http://kv1:8080
+      KV2_URL: http://kv2:8080
+      KV3_URL: http://kv3:8080
+    ports: ['8000:8000']
+    depends_on: [kv1, kv2, kv3]
+    networks: [kvnet]
+volumes:
+  kv1data:
+  kv2data:
+  kv3data:
+networks:
+  kvnet:
