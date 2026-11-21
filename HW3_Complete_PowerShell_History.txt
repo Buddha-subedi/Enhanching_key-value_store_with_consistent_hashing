@@ -1,0 +1,1081 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261121145258
+Username: ADMINISTRATOR\User
+RunAs User: ADMINISTRATOR\User
+Configuration Name: 
+Machine: ADMINISTRATOR (Microsoft Windows NT 10.0.19045.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Process ID: 21836
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is .\HW3_Complete_PowerShell_History.txt
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Get-Date -Format o
+2026-11-21T14:53:28.6513599-06:00
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python --version
+Python 3.11.9
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> docker --version
+Docker version 29.9.2, build a82e528
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> 
+docker compose version
+Docker Compose version v5.6.1
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> docker info --format 'CPUs={{.NCPU}} MemoryBytes={{.MemTotal}}'
+CPUs=4 MemoryBytes=4037599232
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> docker compose config --services
+kv1
+kv2
+kv3
+router
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> docker compose up -d --build
+[+] Building 38.9s (33/33) FINISHED
+ => [internal] load local bake definitions                                                                         0.0s
+ => => reading from stdin 2.57kB                                                                                   0.0s
+ => [internal] booting buildkit                                                                                    9.0s
+ => => pulling image moby/buildkit:buildx-stable-1                                                                 4.2s
+ => => creating container buildx_buildkit_default                                                                  4.6s
+ => [kv1 internal] load build definition from Dockerfile                                                           0.6s
+ => => transferring dockerfile: 288B                                                                               0.5s
+ => [router internal] load build definition from Dockerfile.router                                                 0.7s
+ => => transferring dockerfile: 227B                                                                               0.4s
+ => [kv1 internal] load metadata for docker.io/library/python:3.11-alpine                                          0.9s
+ => [router internal] load metadata for docker.io/library/python:3.11-slim                                         0.8s
+ => [auth] library/python:pull token for registry-1.docker.io                                                      0.0s
+ => [kv2 internal] load .dockerignore                                                                              0.1s
+ => => transferring context: 2B                                                                                    0.0s
+ => [kv2 1/6] FROM docker.io/library/python:3.11-alpine@sha256:7fbad8e4652eae0186429a6f26cf5b23e27e8c6fd7ac4d0cfd  0.2s
+ => => resolve docker.io/library/python:3.11-alpine@sha256:7fbad8e4652eae0186429a6f26cf5b23e27e8c6fd7ac4d0cfd7a69  0.2s
+ => [router internal] load build context                                                                           0.2s
+ => => transferring context: 7.31kB                                                                                0.1s
+ => [router 1/5] FROM docker.io/library/python:3.11-slim@sha256:07d4824036af339fa1b6ef769cc99d9c10a141769538b52b3  0.3s
+ => => resolve docker.io/library/python:3.11-slim@sha256:07d4824036af339fa1b6ef769cc99d9c10a141769538b52b3b597c84  0.3s
+ => [kv2 internal] load build context                                                                              0.5s
+ => => transferring context: 263.81kB                                                                              0.4s
+ => CACHED [router 2/5] WORKDIR /app                                                                               0.0s
+ => CACHED [router 3/5] COPY requirements.txt .                                                                    0.0s
+ => CACHED [router 4/5] RUN pip install --no-cache-dir -r requirements.txt                                         0.0s
+ => [router 5/5] COPY router.py hash_ring.py ./                                                                    0.4s
+ => CACHED [kv3 2/6] WORKDIR /app                                                                                  0.0s
+ => CACHED [kv3 3/6] COPY requirements.txt .                                                                       0.0s
+ => CACHED [kv3 4/6] RUN pip install --no-cache-dir -r requirements.txt                                            0.0s
+ => [kv1 5/6] COPY . .                                                                                             0.3s
+ => [router] exporting to oci image format                                                                        25.9s
+ => => exporting layers                                                                                            0.5s
+ => => exporting manifest sha256:5cfa1cc6070a07d4c3d46401158cad52655e404bc0f350e712844df9cf5456db                  0.1s
+ => => exporting config sha256:c05e157a60dacac96109eb860adc9d11b9b1a0d56b6604f3fca1dd7389e3bf07                    0.1s
+ => => sending tarball                                                                                            25.2s
+ => [kv2 6/6] RUN mkdir -p /data                                                                                   0.8s
+ => [kv3] exporting to oci image format                                                                           19.9s
+ => => exporting layers                                                                                            1.5s
+ => => exporting manifest sha256:97b6a02c669864a6fd1a867c4bd7d221f1eb5ea7d14ff574b179946ecd8a6178                  0.5s
+ => => exporting config sha256:73845697bd3fd9e26ee4966d9756472431db8c0a93e54c594d65bbb0a8641a54                    0.4s
+ => => sending tarball                                                                                            17.5s
+ => [kv1] exporting to oci image format                                                                           21.1s
+ => => exporting layers                                                                                            1.4s
+ => => exporting manifest sha256:6b2efeecc140f587375978c73745c8520e234cd39a4ebc3d6f65b376071070e3                  0.5s
+ => => exporting config sha256:312a582e6ef02d77a2c43af84c80f688abe6e9ec0c580f4f434e462ec70702b0                    0.4s
+ => => sending tarball                                                                                            18.8s
+ => [kv2] exporting to oci image format                                                                           19.3s
+ => => exporting layers                                                                                            1.4s
+ => => exporting manifest sha256:b291112ea3ed822244eca1a6ade0eba0314baa86aea1c38e8cd15554f62575c9                  0.4s
+ => => exporting config sha256:8b7d6e5a2b2f27405f19f593a8acc95f03a014effafa19f77fe375075d3d4706                    0.5s
+ => => sending tarball                                                                                            17.0s
+ => importing to docker                                                                                            0.1s
+ => importing to docker                                                                                            0.1s
+ => [kv2] resolving provenance for metadata file                                                                   0.1s
+ => [kv3] resolving provenance for metadata file                                                                   0.1s
+ => importing to docker                                                                                            0.1s
+ => [kv1] resolving provenance for metadata file                                                                   0.1s
+ => importing to docker                                                                                            0.0s
+ => [router] resolving provenance for metadata file                                                                0.0s
+[+] up 9/9
+ ✔ Image enhanching_key-value_store_with_consistent_hashing-main-kv3          Built                                54.5s
+ ✔ Image enhanching_key-value_store_with_consistent_hashing-main-router       Built                                54.6s
+ ✔ Image enhanching_key-value_store_with_consistent_hashing-main-kv1          Built                                54.4s
+ ✔ Image enhanching_key-value_store_with_consistent_hashing-main-kv2          Built                                54.5s
+ ✔ Network enhanching_key-value_store_with_consistent_hashing-main_kvnet      Created                               0.1s
+ ✔ Container enhanching_key-value_store_with_consistent_hashing-main-kv3-1    Started                               1.6s
+ ✔ Container enhanching_key-value_store_with_consistent_hashing-main-kv1-1    Started                               2.1s
+ ✔ Container enhanching_key-value_store_with_consistent_hashing-main-kv2-1    Started                               2.6s
+ ✔ Container enhanching_key-value_store_with_consistent_hashing-main-router-1 Started                               2.4s
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> docker compose ps
+NAME                                                               IMAGE
+            COMMAND              SERVICE   CREATED          STATUS          PORTS
+enhanching_key-value_store_with_consistent_hashing-main-kv1-1      enhanching_key-value_store_with_consistent_hashing-ma
+in-kv1      "python server.py"   kv1       38 seconds ago   Up 35 seconds   8080/tcp
+enhanching_key-value_store_with_consistent_hashing-main-kv2-1      enhanching_key-value_store_with_consistent_hashing-ma
+in-kv2      "python server.py"   kv2       38 seconds ago   Up 35 seconds   8080/tcp
+enhanching_key-value_store_with_consistent_hashing-main-kv3-1      enhanching_key-value_store_with_consistent_hashing-ma
+in-kv3      "python server.py"   kv3       38 seconds ago   Up 36 seconds   8080/tcp
+enhanching_key-value_store_with_consistent_hashing-main-router-1   enhanching_key-value_store_with_consistent_hashing-ma
+in-router   "python router.py"   router    37 seconds ago   Up 34 seconds   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/health" | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1"
+                     ],
+    "status":  "ok",
+    "virtual_nodes_per_store":  128
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1"]}' -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1"
+                     ],
+    "moved":  0
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Put -ContentType "application/json" -Body '{"value":"original"}' -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "key":  "hw3_history_crud",
+    "value":  "original"
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Get -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "key":  "hw3_history_crud",
+    "value":  "original"
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Put -ContentType "application/json" -Body '{"value":"updated"}' -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "key":  "hw3_history_crud",
+    "value":  "updated"
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Get -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "key":  "hw3_history_crud",
+    "value":  "updated"
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Delete -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "key":  "hw3_history_crud",
+    "message":  "Deleted"
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> try { Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Get -TimeoutSec 300 -ErrorAction Stop | Out-Null; Write-Host "FAIL: deleted CRUD key still exists" } catch { if ($_.Exception.Response -and [int]$_.Exception.Response.StatusCode -eq 404) { Write-Host "PASS: deleted CRUD key returns HTTP 404" } else { Write-Host "FAIL: unexpected retrieval error: $_" } }
+>> TerminatingError(Invoke-RestMethod): "{"error":"Key not found"}
+"
+PASS: deleted CRUD key returns HTTP 404
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1","kv2"]}' -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2"
+                     ],
+    "cleanup_errors":  [
+
+                       ],
+    "moved":  0
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/health" -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2"
+                     ],
+    "status":  "ok",
+    "virtual_nodes_per_store":  128
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1","kv2","kv3"]}' -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2",
+                         "kv3"
+                     ],
+    "cleanup_errors":  [
+
+                       ],
+    "moved":  0
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/health" -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2",
+                         "kv3"
+                     ],
+    "status":  "ok",
+    "virtual_nodes_per_store":  128
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python -m pip install -r requirements-dev.txt
+Requirement already satisfied: Flask<4,>=3.0 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.1
+1_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from -r requirements.txt (line 1)) (3.1.3)
+Requirement already satisfied: requests<3,>=2.31 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python
+.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from -r requirements.txt (line 2)) (2.31.0)
+Requirement already satisfied: pytest<10,>=8 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.1
+1_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from -r requirements-dev.txt (line 2)) (9.2.0)
+Requirement already satisfied: matplotlib<4,>=3.8 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.pytho
+n.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from -r requirements-dev.txt (line 3)) (3.8.0)
+Requirement already satisfied: blinker>=1.9.0 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.
+11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from Flask<4,>=3.0->-r requirements.txt (line 1)) (1
+.9.0)
+Requirement already satisfied: click>=8.1.3 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11
+_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from Flask<4,>=3.0->-r requirements.txt (line 1)) (8.5
+.1)
+Requirement already satisfied: itsdangerous>=2.2.0 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.pyth
+on.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from Flask<4,>=3.0->-r requirements.txt (line 1
+)) (2.2.0)
+Requirement already satisfied: jinja2>=3.1.2 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.1
+1_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from Flask<4,>=3.0->-r requirements.txt (line 1)) (3.
+1.5)
+Requirement already satisfied: markupsafe>=2.1.1 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python
+.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from Flask<4,>=3.0->-r requirements.txt (line 1))
+ (2.1.4)
+Requirement already satisfied: werkzeug>=3.1.0 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3
+.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from Flask<4,>=3.0->-r requirements.txt (line 1)) (
+3.1.9)
+Requirement already satisfied: charset-normalizer<4,>=2 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation
+.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from requests<3,>=2.31->-r requirements.tx
+t (line 2)) (3.3.2)
+Requirement already satisfied: idna<4,>=2.5 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11
+_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from requests<3,>=2.31->-r requirements.txt (line 2))
+(3.20)
+Requirement already satisfied: urllib3<3,>=1.21.1 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.pytho
+n.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from requests<3,>=2.31->-r requirements.txt (lin
+e 2)) (2.1.0)
+Requirement already satisfied: certifi>=2017.4.17 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.pytho
+n.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from requests<3,>=2.31->-r requirements.txt (lin
+e 2)) (2023.7.22)
+Requirement already satisfied: colorama>=0.4 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.1
+1_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from pytest<10,>=8->-r requirements-dev.txt (line 2))
+ (0.4.6)
+Requirement already satisfied: iniconfig>=2 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11
+_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from pytest<10,>=8->-r requirements-dev.txt (line 2))
+(2.3.1)
+Requirement already satisfied: packaging>=24 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.1
+1_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from pytest<10,>=8->-r requirements-dev.txt (line 2))
+ (26.3)
+Requirement already satisfied: pluggy<2,>=1.6 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.
+11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from pytest<10,>=8->-r requirements-dev.txt (line 2)
+) (1.7.0)
+Requirement already satisfied: pygments>=2.15 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.
+11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from pytest<10,>=8->-r requirements-dev.txt (line 2)
+) (2.17.2)
+Requirement already satisfied: contourpy>=1.0.1 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.
+3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt (
+line 3)) (1.1.1)
+Requirement already satisfied: cycler>=0.10 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11
+_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt (line
+ 3)) (0.12.1)
+Requirement already satisfied: fonttools>=4.22.0 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python
+.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt
+(line 3)) (4.43.1)
+Requirement already satisfied: kiwisolver>=1.0.1 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python
+.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt
+(line 3)) (1.4.5)
+Requirement already satisfied: numpy<2,>=1.21 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.
+11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt (li
+ne 3)) (1.26.4)
+Requirement already satisfied: pillow>=6.2.0 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.1
+1_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt (lin
+e 3)) (10.1.0)
+Requirement already satisfied: pyparsing>=2.3.1 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.
+3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt (
+line 3)) (3.1.1)
+Requirement already satisfied: python-dateutil>=2.7 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.pyt
+hon.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.t
+xt (line 3)) (2.8.2)
+Requirement already satisfied: six>=1.5 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz
+5n2kfra8p0\localcache\local-packages\python311\site-packages (from python-dateutil>=2.7->matplotlib<4,>=3.8->-r requirem
+ents-dev.txt (line 3)) (1.16.0)
+
+[notice] A new release of pip is available: 24.0 -> 26.3
+[notice] To update, run: C:\Users\User\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kf
+ra8p0\python.exe -m pip install --upgrade pip
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python -m pytest -q test_hash_ring.py
+...                                                                                                              [100%]
+3 passed in 0.14s
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python -m pytest -q test_integration_hw3.py
+.                                                                                                                [100%]
+1 passed in 598.50s (0:09:58)
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python -m pytest -q test_router_lock.py test_concurrency.py
+
+======================================================= ERRORS ========================================================
+________________________________________ ERROR collecting test_concurrency.py _________________________________________
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\urllib3\connection.py:203: in _new_conn
+    sock = connection.create_connection(
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\urllib3\util\connection.py:85: in create_connection
+    raise err
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\urllib3\util\connection.py:73: in create_connection
+    sock.connect(sa)
+E   ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\urllib3\connectionpool.py:790: in urlopen
+    response = self._make_request(
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\urllib3\connectionpool.py:496: in _make_request
+    conn.request(
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\urllib3\connection.py:395: in request
+    self.endheaders()
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\http\client.py:1298
+: in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\http\client.py:1058
+: in _send_output
+    self.send(msg)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\http\client.py:996:
+ in send
+    self.connect()
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\urllib3\connection.py:243: in connect
+    self.sock = self._new_conn()
+                ^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\urllib3\connection.py:218: in _new_conn
+    raise NewConnectionError(
+E   urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x000001EF59741650>: Failed to e
+stablish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\requests\adapters.py:486: in send
+    resp = conn.urlopen(
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\urllib3\connectionpool.py:844: in urlopen
+    retries = retries.increment(
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\urllib3\util\retry.py:515: in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /c
+oncurrent_test (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001EF59741650>: Failed t
+o establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused i
+t'))
+
+During handling of the above exception, another exception occurred:
+test_concurrency.py:16: in <module>
+    list(pool.map(write, range(60)))
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\
+_base.py:619: in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\
+_base.py:317: in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\
+_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\
+_base.py:401: in __get_result
+    raise self._exception
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\
+thread.py:58: in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_concurrency.py:8: in write
+    response = requests.put(BASE, json={"value": f"writer_{i}"}, timeout=300)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\requests\api.py:130: in put
+    return request("put", url, data=data, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\requests\api.py:59: in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\requests\sessions.py:589: in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\requests\sessions.py:703: in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site
+-packages\requests\adapters.py:519: in send
+    raise ConnectionError(e, request=request)
+E   requests.exceptions.ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url:
+ /concurrent_test (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001EF59741650>: Faile
+d to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refuse
+d it'))
+=============================================== short test summary info ===============================================
+ERROR test_concurrency.py - requests.exceptions.ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max re
+tries exceeded with url...
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 error in 7.17s
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> (Get-Content .\test_concurrency.py -Raw).Replace('127.0.0.1:8080','127.0.0.1:8000') | Set-Content .\test_concurrency.py
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> docker compose ps
+NAME                                                               IMAGE
+            COMMAND              SERVICE   CREATED          STATUS          PORTS
+enhanching_key-value_store_with_consistent_hashing-main-kv1-1      enhanching_key-value_store_with_consistent_hashing-ma
+in-kv1      "python server.py"   kv1       16 minutes ago   Up 16 minutes   8080/tcp
+enhanching_key-value_store_with_consistent_hashing-main-kv2-1      enhanching_key-value_store_with_consistent_hashing-ma
+in-kv2      "python server.py"   kv2       16 minutes ago   Up 16 minutes   8080/tcp
+enhanching_key-value_store_with_consistent_hashing-main-kv3-1      enhanching_key-value_store_with_consistent_hashing-ma
+in-kv3      "python server.py"   kv3       16 minutes ago   Up 16 minutes   8080/tcp
+enhanching_key-value_store_with_consistent_hashing-main-router-1   enhanching_key-value_store_with_consistent_hashing-ma
+in-router   "python router.py"   router    16 minutes ago   Up 16 minutes   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/health" -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1"
+                     ],
+    "status":  "ok",
+    "virtual_nodes_per_store":  128
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python -m pytest -v -s test_router_lock.py test_concurrency.py
+================================================= test session starts =================================================
+platform win32 -- Python 3.11.9, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\User\AppData\Local\Microsoft\WindowsApps\PythonS
+oftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main
+plugins: anyio-4.16.0
+collecting 2 items                                                                                                     P
+ASS: 60 concurrent PUTs and 30 concurrent DELs on one key
+collected 2 items
+
+test_router_lock.py::test_parallel_readers PASSED
+test_router_lock.py::test_writer_waits_for_reader PASSED
+
+================================================== 2 passed in 4.74s ==================================================
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1","kv2","kv3"]}' -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2",
+                         "kv3"
+                     ],
+    "cleanup_errors":  [
+
+                       ],
+    "moved":  2014
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $success=0; $failed=0; 1..3000 | ForEach-Object { $k="hw3_test_key_$_"; $body=@{value="test_value_$_"} | ConvertTo-Json -Compress; try { Invoke-RestMethod -Uri "http://localhost:8000/$k" -Method Put -ContentType "application/json" -Body $body -TimeoutSec 300 -ErrorAction Stop | Out-Null; $success++ } catch { $failed++; Write-Host "FAILED PUT: $k - $_" } }; Write-Host "Inserted: $success | Errors: $failed"; if ($failed -gt 0 -or $success -ne 3000) { throw "STOP: insertion incomplete; do not proceed to migration" }
+Inserted: 3000 | Errors: 0
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $d=Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"} -TimeoutSec 300; $d | ConvertTo-Json -Depth 10; if ($d.total -lt 3000 -or $d.counts.kv1 -le 0 -or $d.counts.kv2 -le 0 -or $d.counts.kv3 -le 0) { throw "STOP: expected at least 3000 keys distributed over all three stores" } else { Write-Host "PASS: all three stores hold keys; total=$($d.total)" }
+{
+    "counts":  {
+                   "kv1":  986,
+                   "kv2":  962,
+                   "kv3":  1052
+               },
+    "total":  3000
+}
+PASS: all three stores hold keys; total=3000
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $good=0; $bad=0; 1..3000 | ForEach-Object { $i=$_; $k="hw3_test_key_$i"; try { $r=Invoke-RestMethod -Uri "http://localhost:8000/$k" -Method Get -TimeoutSec 300 -ErrorAction Stop; if ($r.value -eq "test_value_$i") { $good++ } else { $bad++; Write-Host "MISMATCH: $k" } } catch { $bad++; Write-Host "FAILED GET: $k - $_" } }; Write-Host "Correct values: $good | Errors: $bad"; if ($bad -gt 0 -or $good -ne 3000) { throw "STOP: some keys are missing or incorrect; do not proceed to migration" }
+Correct values: 3000 | Errors: 0
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1","kv2"]}' -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2"
+                     ],
+    "cleanup_errors":  [
+
+                       ],
+    "moved":  1052
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $d=Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"} -TimeoutSec 300; $d | ConvertTo-Json -Depth 10; if ($d.total -lt 3000 -or $d.counts.kv1 -le 0 -or $d.counts.kv2 -le 0) { throw "FAIL: keys missing after 3-to-2 migration" } else { Write-Host "PASS: 2-node distribution contains at least 3000 keys" }
+{
+    "counts":  {
+                   "kv1":  1527,
+                   "kv2":  1473
+               },
+    "total":  3000
+}
+PASS: 2-node distribution contains at least 3000 keys
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $good=0; $bad=0; 1,500,1000,2000,3000 | ForEach-Object { $i=$_; try { $r=Invoke-RestMethod -Uri "http://localhost:8000/hw3_test_key_$i" -Method Get -TimeoutSec 300 -ErrorAction Stop; if ($r.value -eq "test_value_$i") { $good++; Write-Host "PASS: key $i" } else { $bad++; Write-Host "FAIL: wrong value for key $i" } } catch { $bad++; Write-Host "FAIL: key $i not readable: $_" } }; if ($bad -gt 0) { throw "STOP: failed 2-node key checks" }
+PASS: key 1
+PASS: key 500
+PASS: key 1000
+PASS: key 2000
+PASS: key 3000
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1"]}' -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1"
+                     ],
+    "cleanup_errors":  [
+
+                       ],
+    "moved":  1473
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $d=Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"} -TimeoutSec 300; $d | ConvertTo-Json -Depth 10; if ($d.total -lt 3000 -or $d.counts.kv1 -lt 3000) { throw "FAIL: keys missing after 2-to-1 migration" } else { Write-Host "PASS: kv1 contains at least 3000 keys" }
+{
+    "counts":  {
+                   "kv1":  3000
+               },
+    "total":  3000
+}
+PASS: kv1 contains at least 3000 keys
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $d=Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"} -TimeoutSec 300; $d | ConvertTo-Json -Depth 10; if ($d.total -lt 3000 -or $d.counts.kv1 -lt 3000) { throw "FAIL: keys missing after 2-to-1 migration" } else { Write-Host "PASS: kv1 contains at least 3000 keys" }
+{
+    "counts":  {
+                   "kv1":  3000
+               },
+    "total":  3000
+}
+PASS: kv1 contains at least 3000 keys
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $good=0; $bad=0; 1,500,1000,2000,3000 | ForEach-Object { $i=$_; try { $r=Invoke-RestMethod -Uri "http://localhost:8000/hw3_test_key_$i" -Method Get -TimeoutSec 300 -ErrorAction Stop; if ($r.value -eq "test_value_$i") { $good++; Write-Host "PASS: key $i" } else { $bad++; Write-Host "FAIL: wrong value for key $i" } } catch { $bad++; Write-Host "FAIL: key $i not readable: $_" } }; if ($bad -gt 0) { throw "STOP: failed 1-node key checks" }
+PASS: key 1
+PASS: key 500
+PASS: key 1000
+PASS: key 2000
+PASS: key 3000
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1","kv2","kv3"]}' -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2",
+                         "kv3"
+                     ],
+    "cleanup_errors":  [
+
+                       ],
+    "moved":  2014
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $d=Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"} -TimeoutSec 300; $d | ConvertTo-Json -Depth 10; if ($d.total -lt 3000 -or $d.counts.kv1 -le 0 -or $d.counts.kv2 -le 0 -or $d.counts.kv3 -le 0) { throw "FAIL: distribution after restoring 3 nodes" } else { Write-Host "PASS: keys present across all 3 stores" }
+{
+    "counts":  {
+                   "kv1":  986,
+                   "kv2":  962,
+                   "kv3":  1052
+               },
+    "total":  3000
+}
+PASS: keys present across all 3 stores
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $good=0; $bad=0; 1,500,1000,2000,3000 | ForEach-Object { $i=$_; try { $r=Invoke-RestMethod -Uri "http://localhost:8000/hw3_test_key_$i" -Method Get -TimeoutSec 300 -ErrorAction Stop; if ($r.value -eq "test_value_$i") { $good++; Write-Host "PASS: key $i" } else { $bad++; Write-Host "FAIL: wrong value for key $i" } } catch { $bad++; Write-Host "FAIL: key $i not readable: $_" } }; if ($bad -gt 0) { throw "STOP: failed restored 3-node key checks" }
+PASS: key 1
+PASS: key 500
+PASS: key 1000
+PASS: key 2000
+PASS: key 3000
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> New-Item -ItemType Directory -Force -Path ".\results\historical_backup" | Out-Null; if (Test-Path ".\results\benchmark.csv") { Copy-Item ".\results\benchmark.csv" ".\results\historical_backup\benchmark.csv" -Force }; Get-ChildItem ".\results" -Filter "*.png" -ErrorAction SilentlyContinue | Copy-Item -Destination ".\results\historical_backup" -Force
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python benchmark_hw3.py --operations 1200 --workers 16 --repeats 3
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS C:\Users\User> cd C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Start-Transcript -Path ".\HW3_Complete_PowerShell_History.txt" -Append
+Transcript started, output file is .\HW3_Complete_PowerShell_History.txt
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> docker info --format 'CPUs={{.NCPU}} MemoryBytes={{.MemTotal}}'
+>> docker compose version
+>> docker --version
+>> python --version
+>> Get-Date -Format o^C
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Get-Date -Format o
+2026-11-21T14:53:28.6513599-06:00
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python --version
+Python 3.11.9
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> docker --version
+Docker version 29.9.2, build a82e528
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main>
+>> docker compose version^C
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main>
+>> docker compose version
+Docker Compose version v5.6.1
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> docker info --format 'CPUs={{.NCPU}} MemoryBytes={{.MemTotal}}'
+CPUs=4 MemoryBytes=4037599232
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> docker compose config --services
+kv1
+kv2
+kv3
+router
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> docker compose up -d --build
+[+] Building 38.9s (33/33) FINISHED
+ => [internal] load local bake definitions                                                                         0.0s
+ => => reading from stdin 2.57kB                                                                                   0.0s
+ => [internal] booting buildkit                                                                                    9.0s
+ => => pulling image moby/buildkit:buildx-stable-1                                                                 4.2s
+ => => creating container buildx_buildkit_default                                                                  4.6s
+ => [kv1 internal] load build definition from Dockerfile                                                           0.6s
+ => => transferring dockerfile: 288B                                                                               0.5s
+ => [router internal] load build definition from Dockerfile.router                                                 0.7s
+ => => transferring dockerfile: 227B                                                                               0.4s
+ => [kv1 internal] load metadata for docker.io/library/python:3.11-alpine                                          0.9s
+ => [router internal] load metadata for docker.io/library/python:3.11-slim                                         0.8s
+ => [auth] library/python:pull token for registry-1.docker.io                                                      0.0s
+ => [kv2 internal] load .dockerignore                                                                              0.1s
+ => => transferring context: 2B                                                                                    0.0s
+ => [kv2 1/6] FROM docker.io/library/python:3.11-alpine@sha256:7fbad8e4652eae0186429a6f26cf5b23e27e8c6fd7ac4d0cfd  0.2s
+ => => resolve docker.io/library/python:3.11-alpine@sha256:7fbad8e4652eae0186429a6f26cf5b23e27e8c6fd7ac4d0cfd7a69  0.2s
+ => [router internal] load build context                                                                           0.2s
+ => => transferring context: 7.31kB                                                                                0.1s
+ => [router 1/5] FROM docker.io/library/python:3.11-slim@sha256:07d4824036af339fa1b6ef769cc99d9c10a141769538b52b3  0.3s
+ => => resolve docker.io/library/python:3.11-slim@sha256:07d4824036af339fa1b6ef769cc99d9c10a141769538b52b3b597c84  0.3s
+ => [kv2 internal] load build context                                                                              0.5s
+ => => transferring context: 263.81kB                                                                              0.4s
+ => CACHED [router 2/5] WORKDIR /app                                                                               0.0s
+ => CACHED [router 3/5] COPY requirements.txt .                                                                    0.0s
+ => CACHED [router 4/5] RUN pip install --no-cache-dir -r requirements.txt                                         0.0s
+ => [router 5/5] COPY router.py hash_ring.py ./                                                                    0.4s
+ => CACHED [kv3 2/6] WORKDIR /app                                                                                  0.0s
+ => CACHED [kv3 3/6] COPY requirements.txt .                                                                       0.0s
+ => CACHED [kv3 4/6] RUN pip install --no-cache-dir -r requirements.txt                                            0.0s
+ => [kv1 5/6] COPY . .                                                                                             0.3s
+ => [router] exporting to oci image format                                                                        25.9s
+ => => exporting layers                                                                                            0.5s
+ => => exporting manifest sha256:5cfa1cc6070a07d4c3d46401158cad52655e404bc0f350e712844df9cf5456db                  0.1s
+ => => exporting config sha256:c05e157a60dacac96109eb860adc9d11b9b1a0d56b6604f3fca1dd7389e3bf07                    0.1s
+ => => sending tarball                                                                                            25.2s
+ => [kv2 6/6] RUN mkdir -p /data                                                                                   0.8s
+ => [kv3] exporting to oci image format                                                                           19.9s
+ => => exporting layers                                                                                            1.5s
+ => => exporting manifest sha256:97b6a02c669864a6fd1a867c4bd7d221f1eb5ea7d14ff574b179946ecd8a6178                  0.5s
+ => => exporting config sha256:73845697bd3fd9e26ee4966d9756472431db8c0a93e54c594d65bbb0a8641a54                    0.4s
+ => => sending tarball                                                                                            17.5s
+ => [kv1] exporting to oci image format                                                                           21.1s
+ => => exporting layers                                                                                            1.4s
+ => => exporting manifest sha256:6b2efeecc140f587375978c73745c8520e234cd39a4ebc3d6f65b376071070e3                  0.5s
+ => => exporting config sha256:312a582e6ef02d77a2c43af84c80f688abe6e9ec0c580f4f434e462ec70702b0                    0.4s
+ => => sending tarball                                                                                            18.8s
+ => [kv2] exporting to oci image format                                                                           19.3s
+ => => exporting layers                                                                                            1.4s
+ => => exporting manifest sha256:b291112ea3ed822244eca1a6ade0eba0314baa86aea1c38e8cd15554f62575c9                  0.4s
+ => => exporting config sha256:8b7d6e5a2b2f27405f19f593a8acc95f03a014effafa19f77fe375075d3d4706                    0.5s
+ => => sending tarball                                                                                            17.0s
+ => importing to docker                                                                                            0.1s
+ => importing to docker                                                                                            0.1s
+ => [kv2] resolving provenance for metadata file                                                                   0.1s
+ => [kv3] resolving provenance for metadata file                                                                   0.1s
+ => importing to docker                                                                                            0.1s
+ => [kv1] resolving provenance for metadata file                                                                   0.1s
+ => importing to docker                                                                                            0.0s
+ => [router] resolving provenance for metadata file                                                                0.0s
+[+] up 9/9
+ ✔ Image enhanching_key-value_store_with_consistent_hashing-main-kv3          Built                                54.5s ✔ Image enhanching_key-value_store_with_consistent_hashing-main-router       Built                                54.6s ✔ Image enhanching_key-value_s
+tore_with_consistent_hashing-main-kv1          Built                                54.4s ✔ Image enhanching_key-value_store_with_consistent_hashing-main-kv2          Built                                54.5s ✔ Network enhanching_key-value_store_with_consistent_hashing-
+main_kvnet      Created                               0.1s ✔ Container enhanching_key-value_store_with_consistent_hashing-main-kv3-1    Started                               1.6s ✔ Container enhanching_key-value_store_with_consistent_hashing-main-kv1-1    Started
+                       2.1s ✔ Container enhanching_key-value_store_with_consistent_hashing-main-kv2-1    Started                               2.6s ✔ Container enhanching_key-value_store_with_consistent_hashing-main-router-1 Started                               2.4sPS C
+:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> docker compose ps
+NAME                                                               IMAGE                                                            COMMAND              SERVICE   CREATED          STATUS          PORTS
+enhanching_key-value_store_with_consistent_hashing-main-kv1-1      enhanching_key-value_store_with_consistent_hashing-main-kv1      "python server.py"   kv1       38 seconds ago   Up 35 seconds   8080/tcp
+enhanching_key-value_store_with_consistent_hashing-main-kv2-1      enhanching_key-value_store_with_consistent_hashing-main-kv2      "python server.py"   kv2       38 seconds ago   Up 35 seconds   8080/tcp
+enhanching_key-value_store_with_consistent_hashing-main-kv3-1      enhanching_key-value_store_with_consistent_hashing-main-kv3      "python server.py"   kv3       38 seconds ago   Up 36 seconds   8080/tcp
+enhanching_key-value_store_with_consistent_hashing-main-router-1   enhanching_key-value_store_with_consistent_hashing-main-router   "python router.py"   router    37 seconds ago   Up 34 seconds   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/health" | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1"
+                     ],
+    "status":  "ok",
+    "virtual_nodes_per_store":  128
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1"]}' -Time
+outSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1"
+                     ],
+    "moved":  0
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Put -ContentType "application/json" -Body '{"value":"original"}' -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "key":  "hw3_history_crud",
+    "value":  "original"
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Get -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "key":  "hw3_history_crud",
+    "value":  "original"
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Put -ContentType "application/json" -Body '{"value":"updated"}' -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "key":  "hw3_history_crud",
+    "value":  "updated"
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Get -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "key":  "hw3_history_crud",
+    "value":  "updated"
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Delete -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "key":  "hw3_history_crud",
+    "message":  "Deleted"
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> try { Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Get -TimeoutSec 300 -ErrorAction Stop | Out-Null; Write-Host "FAIL: deleted CRUD key still exists" } catch {
+if ($_.Exception.Response -and [int]$_.Exception.Response.StatusCode -eq 404) { Write-Host "PASS: deleted CRUD key returns HTTP 404" } else { Write-Host "FAIL: unexpected retrieval error: $_" } }
+PASS: deleted CRUD key returns HTTP 404
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1","kv2"]}'
+ -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2"
+                     ],
+    "cleanup_errors":  [
+
+                       ],
+    "moved":  0
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/health" -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2"
+                     ],
+    "status":  "ok",
+    "virtual_nodes_per_store":  128
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1","kv2","k
+v3"]}' -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2",
+                         "kv3"
+                     ],
+    "cleanup_errors":  [
+
+                       ],
+    "moved":  0
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/health" -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2",
+                         "kv3"
+                     ],
+    "status":  "ok",
+    "virtual_nodes_per_store":  128
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python -m pip install -r requirements-dev.txt
+Requirement already satisfied: Flask<4,>=3.0 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from -r requirements.txt (line 1)) (3.1.3)
+Requirement already satisfied: requests<3,>=2.31 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from -r requirements.txt (line 2)) (2.31.0)
+Requirement already satisfied: pytest<10,>=8 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from -r requirements-dev.txt (line 2)) (9.2.0)
+Requirement already satisfied: matplotlib<4,>=3.8 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from -r requirements-dev.txt (line 3)) (3.8.0)
+Requirement already satisfied: blinker>=1.9.0 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from Flask<4,>=3.0->-r requirements.txt (line 1)) (1.9.0)
+Requirement already satisfied: click>=8.1.3 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from Flask<4,>=3.0->-r requirements.txt (line 1)) (8.5.1)
+Requirement already satisfied: itsdangerous>=2.2.0 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from Flask<4,>=3.0->-r requirements.txt (line 1)) (2.2.0)
+Requirement already satisfied: jinja2>=3.1.2 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from Flask<4,>=3.0->-r requirements.txt (line 1)) (3.1.5)
+Requirement already satisfied: markupsafe>=2.1.1 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from Flask<4,>=3.0->-r requirements.txt (line 1)) (2.1.4)
+Requirement already satisfied: werkzeug>=3.1.0 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from Flask<4,>=3.0->-r requirements.txt (line 1)) (3.1.9)
+Requirement already satisfied: charset-normalizer<4,>=2 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from requests<3,>=2.31->-r requirements.txt (line 2)) (3.3.2)
+Requirement already satisfied: idna<4,>=2.5 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from requests<3,>=2.31->-r requirements.txt (line 2)) (3.20)
+Requirement already satisfied: urllib3<3,>=1.21.1 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from requests<3,>=2.31->-r requirements.txt (line 2)) (2.1.0)
+Requirement already satisfied: certifi>=2017.4.17 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from requests<3,>=2.31->-r requirements.txt (line 2)) (2023.7.22)
+Requirement already satisfied: colorama>=0.4 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from pytest<10,>=8->-r requirements-dev.txt (line 2)) (0.4.6)
+Requirement already satisfied: iniconfig>=2 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from pytest<10,>=8->-r requirements-dev.txt (line 2)) (2.3.1)
+Requirement already satisfied: packaging>=24 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from pytest<10,>=8->-r requirements-dev.txt (line 2)) (26.3)
+Requirement already satisfied: pluggy<2,>=1.6 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from pytest<10,>=8->-r requirements-dev.txt (line 2)) (1.7.0)
+Requirement already satisfied: pygments>=2.15 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from pytest<10,>=8->-r requirements-dev.txt (line 2)) (2.17.2)
+Requirement already satisfied: contourpy>=1.0.1 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt (line 3)) (1.1.1)
+Requirement already satisfied: cycler>=0.10 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt (line 3)) (0.12.1)
+Requirement already satisfied: fonttools>=4.22.0 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt (line 3)) (4.43.1)
+Requirement already satisfied: kiwisolver>=1.0.1 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt (line 3)) (1.4.5)
+Requirement already satisfied: numpy<2,>=1.21 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt (line 3)) (1.26.4)
+Requirement already satisfied: pillow>=6.2.0 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt (line 3)) (10.1.0)
+Requirement already satisfied: pyparsing>=2.3.1 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt (line 3)) (3.1.1)
+Requirement already satisfied: python-dateutil>=2.7 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from matplotlib<4,>=3.8->-r requirements-dev.txt (line 3)) (2.8.2)
+Requirement already satisfied: six>=1.5 in c:\users\user\appdata\local\packages\pythonsoftwarefoundation.python.3.11_qbz5n2kfra8p0\localcache\local-packages\python311\site-packages (from python-dateutil>=2.7->matplotlib<4,>=3.8->-r requirements-dev.txt (line 3)) (1.16.0)
+
+
+[notice] A new release of pip is available: 24.0 -> 26.3
+[notice] To update, run: C:\Users\User\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe -m pip install --upgrade pip
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python -m pytest -q test_hash_ring.py
+...                                                                                                              [100%]
+3 passed in 0.14s
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python -m pytest -q test_integration_hw3.py
+.                                                                                                                [100%]
+1 passed in 598.50s (0:09:58)
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python -m pytest -q test_router_lock.py test_concurrency.py
+
+======================================================= ERRORS ========================================================
+________________________________________ ERROR collecting test_concurrency.py _________________________________________
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py:203: in _new_conn
+    sock = connection.create_connection(
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\util\connection.py:85: in create_connection
+    raise err
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\util\connection.py:73: in create_connection
+    sock.connect(sa)
+E   ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connectionpool.py:790: in urlopen
+    response = self._make_request(
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connectionpool.py:496: in _make_request
+    conn.request(
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py:395: in request
+    self.endheaders()
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\http\client.py:1298: in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\http\client.py:1058: in _send_output
+    self.send(msg)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\http\client.py:996: in send
+    self.connect()
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py:243: in connect
+    self.sock = self._new_conn()
+                ^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connection.py:218: in _new_conn
+    raise NewConnectionError(
+E   urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x000001EF59741650>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it
+
+The above exception was the direct cause of the following exception:
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\adapters.py:486: in send
+    resp = conn.urlopen(
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\connectionpool.py:844: in urlopen
+    retries = retries.increment(
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\urllib3\util\retry.py:515: in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /concurrent_test (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001EF59741650>: Failed to establish a new connection: [
+WinError 10061] No connection could be made because the target machine actively refused it'))
+
+During handling of the above exception, another exception occurred:
+test_concurrency.py:16: in <module>
+    list(pool.map(write, range(60)))
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py:619: in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py:317: in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py:58: in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_concurrency.py:8: in write
+    response = requests.put(BASE, json={"value": f"writer_{i}"}, timeout=300)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\api.py:130: in put
+    return request("put", url, data=data, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\api.py:59: in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\sessions.py:589: in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\sessions.py:703: in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\requests\adapters.py:519: in send
+    raise ConnectionError(e, request=request)
+E   requests.exceptions.ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url: /concurrent_test (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001EF59741650>: Failed to establish a new connection
+: [WinError 10061] No connection could be made because the target machine actively refused it'))
+=============================================== short test summary info ===============================================
+ERROR test_concurrency.py - requests.exceptions.ConnectionError: HTTPConnectionPool(host='127.0.0.1', port=8080): Max retries exceeded with url...
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 error in 7.17s
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> (Get-Content .\test_concurrency.py -Raw).Replace('127.0.0.1:8080','127.0.0.1:8000') | Set-Content .\test_concurrency.py
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> docker compose ps
+NAME                                                               IMAGE                                                            COMMAND              SERVICE   CREATED          STATUS          PORTS
+enhanching_key-value_store_with_consistent_hashing-main-kv1-1      enhanching_key-value_store_with_consistent_hashing-main-kv1      "python server.py"   kv1       16 minutes ago   Up 16 minutes   8080/tcp
+enhanching_key-value_store_with_consistent_hashing-main-kv2-1      enhanching_key-value_store_with_consistent_hashing-main-kv2      "python server.py"   kv2       16 minutes ago   Up 16 minutes   8080/tcp
+enhanching_key-value_store_with_consistent_hashing-main-kv3-1      enhanching_key-value_store_with_consistent_hashing-main-kv3      "python server.py"   kv3       16 minutes ago   Up 16 minutes   8080/tcp
+enhanching_key-value_store_with_consistent_hashing-main-router-1   enhanching_key-value_store_with_consistent_hashing-main-router   "python router.py"   router    16 minutes ago   Up 16 minutes   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/health" -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1"
+                     ],
+    "status":  "ok",
+    "virtual_nodes_per_store":  128
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python -m pytest -v -s test_router_lock.py test_concurrency.py
+================================================= test session starts =================================================
+platform win32 -- Python 3.11.9, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\User\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main
+plugins: anyio-4.16.0
+collecting 2 items                                                                                                     PASS: 60 concurrent PUTs and 30 concurrent DELs on one key
+collected 2 items
+
+test_router_lock.py::test_parallel_readers PASSED
+test_router_lock.py::test_writer_waits_for_reader PASSED
+
+================================================== 2 passed in 4.74s ==================================================
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1","kv2","k
+v3"]}' -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2",
+                         "kv3"
+                     ],
+    "cleanup_errors":  [
+
+                       ],
+    "moved":  2014
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $success=0; $failed=0; 1..3000 | ForEach-Object { $k="hw3_test_key_$_"; $body=@{value="test_value_$_"} | ConvertTo-Json -Compress; try { Invoke-RestMethod -Uri "http://localhost:8000/$k"
+-Method Put -ContentType "application/json" -Body $body -TimeoutSec 300 -ErrorAction Stop | Out-Null; $success++ } catch { $failed++; Write-Host "FAILED PUT: $k - $_" } }; Write-Host "Inserted: $success | Errors: $failed"; if ($failed -gt 0 -or $success -ne 3000) { throw
+ "STOP: insertion incomplete; do not proceed to migration" }
+Inserted: 3000 | Errors: 0
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $d=Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"} -TimeoutSec 300; $d | ConvertTo-Json -Depth 10; if ($d.total -lt 3000 -
+or $d.counts.kv1 -le 0 -or $d.counts.kv2 -le 0 -or $d.counts.kv3 -le 0) { throw "STOP: expected at least 3000 keys distributed over all three stores" } else { Write-Host "PASS: all three stores hold keys; total=$($d.total)" }
+{
+    "counts":  {
+                   "kv1":  986,
+                   "kv2":  962,
+                   "kv3":  1052
+               },
+    "total":  3000
+}
+PASS: all three stores hold keys; total=3000
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $good=0; $bad=0; 1..3000 | ForEach-Object { $i=$_; $k="hw3_test_key_$i"; try { $r=Invoke-RestMethod -Uri "http://localhost:8000/$k" -Method Get -TimeoutSec 300 -ErrorAction Stop; if ($r.v
+alue -eq "test_value_$i") { $good++ } else { $bad++; Write-Host "MISMATCH: $k" } } catch { $bad++; Write-Host "FAILED GET: $k - $_" } }; Write-Host "Correct values: $good | Errors: $bad"; if ($bad -gt 0 -or $good -ne 3000) { throw "STOP: some keys are missing or incorrec
+t; do not proceed to migration" }
+Correct values: 3000 | Errors: 0
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1","kv2"]}'
+ -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2"
+                     ],
+    "cleanup_errors":  [
+
+                       ],
+    "moved":  1052
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $d=Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"} -TimeoutSec 300; $d | ConvertTo-Json -Depth 10; if ($d.total -lt 3000 -
+or $d.counts.kv1 -le 0 -or $d.counts.kv2 -le 0) { throw "FAIL: keys missing after 3-to-2 migration" } else { Write-Host "PASS: 2-node distribution contains at least 3000 keys" }
+{
+    "counts":  {
+                   "kv1":  1527,
+                   "kv2":  1473
+               },
+    "total":  3000
+}
+PASS: 2-node distribution contains at least 3000 keys
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $good=0; $bad=0; 1,500,1000,2000,3000 | ForEach-Object { $i=$_; try { $r=Invoke-RestMethod -Uri "http://localhost:8000/hw3_test_key_$i" -Method Get -TimeoutSec 300 -ErrorAction Stop; if (
+$r.value -eq "test_value_$i") { $good++; Write-Host "PASS: key $i" } else { $bad++; Write-Host "FAIL: wrong value for key $i" } } catch { $bad++; Write-Host "FAIL: key $i not readable: $_" } }; if ($bad -gt 0) { throw "STOP: failed 2-node key checks" }
+PASS: key 1
+PASS: key 500
+PASS: key 1000
+PASS: key 2000
+PASS: key 3000
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1"]}' -Time
+outSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1"
+                     ],
+    "cleanup_errors":  [
+
+                       ],
+    "moved":  1473
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $d=Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"} -TimeoutSec 300; $d | ConvertTo-Json -Depth 10; if ($d.total -lt 3000 -
+or $d.counts.kv1 -lt 3000) { throw "FAIL: keys missing after 2-to-1 migration" } else { Write-Host "PASS: kv1 contains at least 3000 keys" }
+{
+    "counts":  {
+                   "kv1":  3000
+               },
+    "total":  3000
+}
+PASS: kv1 contains at least 3000 keys
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $d=Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"} -TimeoutSec 300; $d | ConvertTo-Json -Depth 10; if ($d.total -lt 3000 -
+or $d.counts.kv1 -lt 3000) { throw "FAIL: keys missing after 2-to-1 migration" } else { Write-Host "PASS: kv1 contains at least 3000 keys" }
+{
+    "counts":  {
+                   "kv1":  3000
+               },
+    "total":  3000
+}
+PASS: kv1 contains at least 3000 keys
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $good=0; $bad=0; 1,500,1000,2000,3000 | ForEach-Object { $i=$_; try { $r=Invoke-RestMethod -Uri "http://localhost:8000/hw3_test_key_$i" -Method Get -TimeoutSec 300 -ErrorAction Stop; if (
+$r.value -eq "test_value_$i") { $good++; Write-Host "PASS: key $i" } else { $bad++; Write-Host "FAIL: wrong value for key $i" } } catch { $bad++; Write-Host "FAIL: key $i not readable: $_" } }; if ($bad -gt 0) { throw "STOP: failed 1-node key checks" }
+PASS: key 1
+PASS: key 500
+PASS: key 1000
+PASS: key 2000
+PASS: key 3000
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1","kv2","k
+v3"]}' -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2",
+                         "kv3"
+                     ],
+    "cleanup_errors":  [
+
+                       ],
+    "moved":  2014
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $d=Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"} -TimeoutSec 300; $d | ConvertTo-Json -Depth 10; if ($d.total -lt 3000 -
+or $d.counts.kv1 -le 0 -or $d.counts.kv2 -le 0 -or $d.counts.kv3 -le 0) { throw "FAIL: distribution after restoring 3 nodes" } else { Write-Host "PASS: keys present across all 3 stores" }
+{
+    "counts":  {
+                   "kv1":  986,
+                   "kv2":  962,
+                   "kv3":  1052
+               },
+    "total":  3000
+}
+PASS: keys present across all 3 stores
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> $good=0; $bad=0; 1,500,1000,2000,3000 | ForEach-Object { $i=$_; try { $r=Invoke-RestMethod -Uri "http://localhost:8000/hw3_test_key_$i" -Method Get -TimeoutSec 300 -ErrorAction Stop; if (
+$r.value -eq "test_value_$i") { $good++; Write-Host "PASS: key $i" } else { $bad++; Write-Host "FAIL: wrong value for key $i" } } catch { $bad++; Write-Host "FAIL: key $i not readable: $_" } }; if ($bad -gt 0) { throw "STOP: failed restored 3-node key checks" }
+PASS: key 1
+PASS: key 500
+PASS: key 1000
+PASS: key 2000
+PASS: key 3000
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> New-Item -ItemType Directory -Force -Path ".\results\historical_backup" | Out-Null; if (Test-Path ".\results\benchmark.csv") { Copy-Item ".\results\benchmark.csv" ".\results\historical_ba
+ckup\benchmark.csv" -Force }; Get-ChildItem ".\results" -Filter "*.png" -ErrorAction SilentlyContinue | Copy-Item -Destination ".\results\historical_backup" -Force
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python benchmark_hw3.py --operations 1200 --workers 16 --repeats 3
+{"nodes": 1, "workers": 16, "operations": 1200, "successful": 1200, "errors": 0, "elapsed_s": 12.4062, "throughput_ops_s": 96.726, "mean_ms": 164.407, "p50_ms": 122.041, "p95_ms": 486.245, "p99_ms": 896.397, "repeat": 1}
+{"nodes": 1, "workers": 16, "operations": 1200, "successful": 1200, "errors": 0, "elapsed_s": 11.4961, "throughput_ops_s": 104.383, "mean_ms": 152.267, "p50_ms": 115.688, "p95_ms": 412.018, "p99_ms": 745.861, "repeat": 2}
+{"nodes": 1, "workers": 16, "operations": 1200, "successful": 1200, "errors": 0, "elapsed_s": 11.5545, "throughput_ops_s": 103.855, "mean_ms": 152.828, "p50_ms": 118.715, "p95_ms": 412.051, "p99_ms": 800.257, "repeat": 3}
+{"nodes": 2, "workers": 16, "operations": 1200, "successful": 1200, "errors": 0, "elapsed_s": 10.447, "throughput_ops_s": 114.866, "mean_ms": 138.232, "p50_ms": 114.466, "p95_ms": 291.943, "p99_ms": 542.648, "repeat": 1}
+{"nodes": 2, "workers": 16, "operations": 1200, "successful": 1200, "errors": 0, "elapsed_s": 10.4627, "throughput_ops_s": 114.694, "mean_ms": 138.275, "p50_ms": 120.476, "p95_ms": 261.189, "p99_ms": 486.453, "repeat": 2}
+{"nodes": 2, "workers": 16, "operations": 1200, "successful": 1200, "errors": 0, "elapsed_s": 10.1172, "throughput_ops_s": 118.61, "mean_ms": 133.843, "p50_ms": 112.621, "p95_ms": 276.849, "p99_ms": 551.969, "repeat": 3}
+{"nodes": 3, "workers": 16, "operations": 1200, "successful": 1200, "errors": 0, "elapsed_s": 10.2941, "throughput_ops_s": 116.572, "mean_ms": 136.355, "p50_ms": 112.394, "p95_ms": 300.791, "p99_ms": 583.192, "repeat": 1}
+{"nodes": 3, "workers": 16, "operations": 1200, "successful": 1200, "errors": 0, "elapsed_s": 10.3952, "throughput_ops_s": 115.438, "mean_ms": 137.567, "p50_ms": 111.997, "p95_ms": 250.292, "p99_ms": 1014.844, "repeat": 2}
+{"nodes": 3, "workers": 16, "operations": 1200, "successful": 1200, "errors": 0, "elapsed_s": 9.8746, "throughput_ops_s": 121.524, "mean_ms": 130.679, "p50_ms": 113.208, "p95_ms": 248.442, "p99_ms": 462.96, "repeat": 3}
+Saved results\benchmark.csv
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> python plot_hw3.py
+throughput.png {1: 101.65466666666667, 2: 116.05666666666667, 3: 117.84466666666667}
+latency_mean.png {1: 156.50066666666666, 2: 136.78333333333333, 3: 134.867}
+latency_p95.png {1: 436.7713333333333, 2: 276.6603333333333, 3: 266.5083333333333}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Import-Csv ".\results\benchmark.csv" | Format-Table nodes,repeat,operations,successful,errors,throughput_ops_s,mean_ms,p95_ms -AutoSize
+
+nodes repeat operations successful errors throughput_ops_s mean_ms p95_ms
+----- ------ ---------- ---------- ------ ---------------- ------- ------
+1     1      1200       1200       0      96.726           164.407 486.245
+1     2      1200       1200       0      104.383          152.267 412.018
+1     3      1200       1200       0      103.855          152.828 412.051
+2     1      1200       1200       0      114.866          138.232 291.943
+2     2      1200       1200       0      114.694          138.275 261.189
+2     3      1200       1200       0      118.61           133.843 276.849
+3     1      1200       1200       0      116.572          136.355 300.791
+3     2      1200       1200       0      115.438          137.567 250.292
+3     3      1200       1200       0      121.524          130.679 248.442
+
+
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Get-ChildItem ".\results\*.png" | Select-Object Name,Length
+
+Name             Length
+----             ------
+latency_mean.png  51811
+latency_p95.png   54873
+throughput.png    60691
+
+
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Invoke-RestMethod -Uri "http://localhost:8000/health" -TimeoutSec 300 | ConvertTo-Json -Depth 10
+{
+    "active_nodes":  [
+                         "kv1",
+                         "kv2",
+                         "kv3"
+                     ],
+    "status":  "ok",
+    "virtual_nodes_per_store":  128
+}
+PS C:\Users\User\Downloads\Enhanching_key-value_store_with_consistent_hashing-main> Stop-Transcript
+**********************
+Windows PowerShell transcript end
+End time: 20261121154740
+**********************
