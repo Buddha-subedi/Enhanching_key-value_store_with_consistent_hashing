@@ -12,19 +12,68 @@ The supplied Assignment 2 server (`server.py`) retains its SQLite database and C
 ## 4. Scaling and data integrity
 The authenticated membership endpoint accepts `{"nodes":["kv1","kv2"]}`. It locks all router requests, inventories existing backend keys, copies keys to their new owners, verifies successful HTTP writes, switches the active ring, and cleans up stale copies. Existing data remains accessible across 1→2→3→2→1 membership transitions. Migration is intentionally synchronous and pauses traffic; for production, a distributed coordination service, transactional migration, streaming, authentication between services, and redundancy would be necessary. An unreachable backend returns an error; consistent hashing **does not provide fault tolerance or replication by itself**.
 
-## 5. Experimental method
-Use `docker compose up -d --build`, then `pytest -q test_hash_ring.py test_integration_hw3.py`. Run `python benchmark_hw3.py --operations 1200 --workers 16 --repeats 3 --read-fraction 0.8` and `python plot_hw3.py`. The benchmark seeds keys before each timed run, uses an 80% read/20% update workload with 128-byte values, measures only timed operations, and cleans up after. Identical concurrency and operation counts are used at each node count. It reports successful operations/elapsed seconds, mean, P50, P95 and P99 per-request latency, and errors. Repeat runs and note system load and hardware. The benchmark is end-to-end through the router, so router serialization may constrain scaling.
+## 5. Experimental method and observed execution
 
-## 6. Results — fill with observed measurements
-**Do not submit this section as measured results until the benchmark has actually run.** Copy the numerical results from `results/benchmark.csv` and attach `results/throughput.png`, `results/latency_mean.png`, and `results/latency_p95.png`.
+The distributed deployment was built and started with `docker compose up -d --build`. Docker Compose reported successful creation of three backend containers (`kv1`, `kv2`, `kv3`), a router, three distinct named data volumes, and a private network. Development dependencies were installed/confirmed using `python -m pip install -r requirements-dev.txt`.
 
-| Active nodes | Throughput (ops/s) | Mean latency (ms) | P95 latency (ms) | Errors |
-|---|---:|---:|---:|---:|
-| 1 | TBD | TBD | TBD | TBD |
-| 2 | TBD | TBD | TBD | TBD |
-| 3 | TBD | TBD | TBD | TBD |
+The **actual recorded** distributed benchmark command was:
 
-For each metric, calculate mean across the three repeats. Throughput speedup = throughput(N)/throughput(1). Explain whether improvements are linear, sublinear, flat, or negative. Report actual observations, not assumed improvements.
+```powershell
+python benchmark_hw3.py --operations 1200 --workers 16 --repeats 3
+python plot_hw3.py
+```
+
+The benchmark tested 1, 2, and 3 active backend nodes, with 1,200 timed operations per repeat, 16 concurrent workers, and three repeats per configuration (10,800 successful timed operations in total). The implementation describes a default 80% read / 20% update workload with 128-byte values; the command did **not** explicitly override `--read-fraction`. The tests measure end-to-end requests through the router. Throughput is successful operations divided by elapsed time; reported latency statistics describe individual requests. The summary below is the **arithmetic mean of the three run-level metrics**, not a pooled request-level percentile.
+
+The transcript does not show execution of `test_hash_ring.py` or `test_integration_hw3.py`; these remain unverified in the supplied execution evidence. Earlier standalone CRUD, concurrency, and volume persistence tests were completed separately.
+
+## 6. Measured distributed results (November 20, 2026)
+
+| Active nodes | Mean throughput (ops/s) | Mean latency (ms) | Mean P95 latency (ms) | Errors | Throughput vs. 1 node |
+|---|---:|---:|---:|---:|---:|
+| 1 | 95.61 | 167.17 | 386.94 | 0 | 1.000x |
+| 2 | 97.54 | 162.77 | 384.97 | 0 | 1.020x |
+| 3 | 82.94 | 197.45 | 447.69 | 0 | 0.867x |
+
+All nine distributed benchmark repetitions reported 1,200 successful operations and **zero errors**. Two nodes gave the highest average throughput and lowest average latency, but the improvement over one node was small. Three nodes performed worse on average under this workload. These are measurements from one host, not evidence that adding nodes always decreases performance.
+
+### Per-repeat measurements
+
+| Nodes | Repeat | Successful | Errors | Throughput (ops/s) | Mean (ms) | P50 (ms) | P95 (ms) | P99 (ms) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 1 | 1200 | 0 | 99.751 | 158.984 | 123.986 | 378.458 | 628.119 |
+| 1 | 2 | 1200 | 0 | 102.799 | 154.499 | 122.789 | 380.724 | 621.781 |
+| 1 | 3 | 1200 | 0 | 84.283 | 188.033 | 152.101 | 401.634 | 639.703 |
+| 2 | 1 | 1200 | 0 | 95.907 | 165.522 | 124.473 | 386.688 | 606.313 |
+| 2 | 2 | 1200 | 0 | 98.105 | 161.699 | 125.982 | 362.489 | 597.184 |
+| 2 | 3 | 1200 | 0 | 98.606 | 161.089 | 131.293 | 405.736 | 640.278 |
+| 3 | 1 | 1200 | 0 | 63.876 | 248.840 | 217.329 | 574.633 | 871.781 |
+| 3 | 2 | 1200 | 0 | 89.942 | 176.692 | 152.856 | 395.728 | 606.694 |
+| 3 | 3 | 1200 | 0 | 94.997 | 166.807 | 135.287 | 372.717 | 620.392 |
+
+### Interpretation
+
+- **1 → 2 nodes:** throughput changed by **+2.02%**, and mean latency changed by **-2.63%**.
+- **1 → 3 nodes:** throughput changed by **-13.25%**, and mean latency changed by **+18.11%**.
+- Three-node repeat 1 was notably slower (63.876 ops/s, mean latency 248.840 ms) than repeats 2 and 3 (89.942 and 94.997 ops/s), indicating run-to-run variability. Possible causes include resource contention, router overhead, or background activity; these were not independently measured.
+- The benchmark demonstrates end-to-end performance under a fixed 16-worker workload, **not** storage balance, fault tolerance, replication, or multi-host horizontal scaling.
+
+### Generated artifacts
+
+The PowerShell transcript confirms that `plot_hw3.py` generated the following files locally:
+
+- `results/benchmark.csv`
+- `results/throughput.png`
+- `results/latency_mean.png`
+- `results/latency_p95.png`
+
+If these PNG files are committed to GitHub, the following Markdown references will display the actual plots:
+
+![Throughput by active backend count](results/throughput.png)
+![Mean latency by active backend count](results/latency_mean.png)
+![P95 latency by active backend count](results/latency_p95.png)
+
+**Evidence boundary:** the transcript confirms these files were generated on the user's Windows machine, but the files themselves were not included in the supplied uploads. Do not claim their images have been independently inspected.
 
 ## 7. Challenges and tradeoffs
 - **Consistent routing:** deterministic SHA-256 avoids Python's randomized built-in `hash()`.
@@ -34,8 +83,17 @@ For each metric, calculate mean across the three repeats. Throughput speedup = t
 - **Router bottleneck:** synchronous locking simplifies migrations and correctness, but limits parallelism during requests. In production use read/write coordination and multiple routers with shared membership.
 - **Failure handling:** upstream failures return 503; there is no replication or automatic failover.
 
-## 8. Reproducibility
-Python 3.11; dependencies in `requirements.txt` and `requirements-dev.txt`; Docker Compose defines the deployment. Source files and test commands are documented in `README_HW3.md`. Capture Docker version, OS, CPU, memory, and workload settings when reporting measured results.
+## 8. Reproducibility and standalone validation
+
+- **Environment recorded in the earlier PowerShell transcript:** Windows 10 (build 19045), Windows PowerShell 5.1, Python 3.11.9, Docker Engine/CLI 29.9.2, Docker Compose 5.6.1, Docker Desktop with WSL2 Linux backend, x86_64, **4 CPUs and 3.76 GiB memory allocated to Docker**. The Docker CPU/RAM values are Docker's available resources, not necessarily the host's full specifications.
+- **Standalone CRUD test:** `python test_server.py` passed PUT, GET, UPDATE, DELETE, validation, and missing-key handling.
+- **Standalone concurrency test:** `python test_concurrency.py` passed 60 concurrent PUTs and 30 concurrent DELETEs on one key.
+- **Standalone performance test (not comparable to the distributed benchmark):** `python kv_bench.py` completed 300 SETs at 145.3 ops/s and 300 GETs at 180.0 ops/s, 600 successful operations overall at 160.8 ops/s. This used a different workload and must not be substituted for the 1-node distributed benchmark.
+- **Persistence:** a `persist_check` value was retrieved successfully after removing and recreating the standalone container with the same `kv-data` volume. This is persistence across container recreation, **not** replica-based fault tolerance.
+- **Distributed deployment:** `docker compose up -d --build` started router plus kv1/kv2/kv3; nine benchmark repetitions completed with zero reported errors.
+- **Outstanding verification:** hash-ring unit/integration tests, physical key-count distribution, and node-failure recovery were not shown in the supplied transcripts.
+
+To reproduce the distributed benchmark and its plots, use the commands in `README_HW3.md`.
 
 ## 9. Limitations and future work
 Current backend inventory endpoint is trusted only because backends are on the private Docker network; production deployments need authentication and network policy. No consensus, automatic node-health failover, replication, or cross-router synchronization is implemented. A failed cleanup may leave stale copies, but the router uses only the new owner. Node reconfiguration should be executed by a single administrator and all writes should enter via the router.
