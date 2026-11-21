@@ -16,10 +16,10 @@ Test-Path .\compose.yaml
 
 The second command must print `True`. If not, change into the actual extracted project folder before proceeding. **Do not use `docker compose down -v`**; it deletes data volumes. The following commands intentionally insert test data.
 
-## A. Start the single complete transcript
+## A. Start or resume the single complete transcript
 
 ```powershell
-Start-Transcript -Path ".\HW3_Complete_PowerShell_History.txt" -Force
+Start-Transcript -Path ".\HW3_Complete_PowerShell_History.txt" -Append
 ```
 
 ```powershell
@@ -88,6 +88,12 @@ Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Get | Co
 Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Delete | ConvertTo-Json -Depth 10
 ```
 
+Verify that the deleted CRUD key returns HTTP 404 (expected behavior, not a failure):
+
+```powershell
+try { Invoke-RestMethod -Uri "http://localhost:8000/hw3_history_crud" -Method Get -ErrorAction Stop | Out-Null; Write-Host "FAIL: deleted CRUD key still exists" } catch { if ($_.Exception.Response -and [int]$_.Exception.Response.StatusCode -eq 404) { Write-Host "PASS: deleted CRUD key returns HTTP 404" } else { Write-Host "FAIL: unexpected retrieval error: $_" } }
+```
+
 ## D. Consistent hashing: 1 → 2 → 3 active stores
 
 ```powershell
@@ -106,51 +112,83 @@ Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -C
 Invoke-RestMethod -Uri "http://localhost:8000/health" | ConvertTo-Json -Depth 10
 ```
 
-## E. Physical key distribution (3,000 keys)
+## E. Physical key distribution (3,000 keys) — REQUIRED BEFORE MIGRATION
 
-This uses the correct endpoint `PUT /<key>` (NOT `/kv/<key>`). If you already inserted these keys, the PUTs update them and counts should remain at 3,000 for this key set. Other existing keys may raise the overall count.
+**Run this section completely before Section F.** A newly created Docker Compose project normally has empty data volumes. A previous run in another project folder does not populate this one. The correct key endpoint is `/<key>` (NOT `/kv/<key>`).
 
-```powershell
-$success=0; $failed=0; 1..3000 | ForEach-Object { $k="hw3_test_key_$_"; $body=@{value="test_value_$_"} | ConvertTo-Json -Compress; try { Invoke-RestMethod -Uri "http://localhost:8000/$k" -Method Put -ContentType "application/json" -Body $body -ErrorAction Stop | Out-Null; $success++ } catch { $failed++; Write-Host "FAILED: $k - $_" } }; Write-Host "Successful: $success | Failed: $failed"
-```
+First ensure that all three stores are ACTIVE, not merely running:
 
 ```powershell
-Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"} | ConvertTo-Json -Depth 10
+Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1","kv2","kv3"]}' | ConvertTo-Json -Depth 10
 ```
+
+Insert or overwrite the 3,000 uniquely named test keys:
 
 ```powershell
-$good=0; $bad=0; 1..3000 | ForEach-Object { $k="hw3_test_key_$_"; try { $r=Invoke-RestMethod -Uri "http://localhost:8000/$k" -Method Get -ErrorAction Stop; if ($r.value -eq "test_value_$_") { $good++ } else { $bad++; Write-Host "MISMATCH: $k" } } catch { $bad++; Write-Host "FAILED GET: $k - $_" } }; Write-Host "Readable and correct: $good | Errors: $bad"
+$success=0; $failed=0; 1..3000 | ForEach-Object { $k="hw3_test_key_$_"; $body=@{value="test_value_$_"} | ConvertTo-Json -Compress; try { Invoke-RestMethod -Uri "http://localhost:8000/$k" -Method Put -ContentType "application/json" -Body $body -ErrorAction Stop | Out-Null; $success++ } catch { $failed++; Write-Host "FAILED PUT: $k - $_" } }; Write-Host "Inserted: $success | Errors: $failed"; if ($failed -gt 0 -or $success -ne 3000) { throw "STOP: insertion incomplete; do not proceed to migration" }
 ```
 
-## F. Demonstrate safe reconfiguration while preserving keys
+Check the physical counts on the three ACTIVE stores:
+
+```powershell
+$d=Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"}; $d | ConvertTo-Json -Depth 10; if ($d.total -lt 3000 -or $d.counts.kv1 -le 0 -or $d.counts.kv2 -le 0 -or $d.counts.kv3 -le 0) { throw "STOP: expected at least 3000 keys distributed over all three stores" } else { Write-Host "PASS: all three stores hold keys; total=$($d.total)" }
+```
+
+Verify all 3,000 values through the router (may take several minutes):
+
+```powershell
+$good=0; $bad=0; 1..3000 | ForEach-Object { $i=$_; $k="hw3_test_key_$i"; try { $r=Invoke-RestMethod -Uri "http://localhost:8000/$k" -Method Get -ErrorAction Stop; if ($r.value -eq "test_value_$i") { $good++ } else { $bad++; Write-Host "MISMATCH: $k" } } catch { $bad++; Write-Host "FAILED GET: $k - $_" } }; Write-Host "Correct values: $good | Errors: $bad"; if ($bad -gt 0 -or $good -ne 3000) { throw "STOP: some keys are missing or incorrect; do not proceed to migration" }
+```
+
+**Proceed to F only if insertion succeeded, all three stores have keys, and all 3,000 GETs succeeded.** If a check fails, save its output and investigate rather than creating replacement keys during the migration test.
+
+## F. Membership changes and data preservation (3 → 2 → 1 → 3)
+
+The following steps intentionally check the same key at each membership size. A `FAIL` indicates a real retrieval/migration problem; do not hide it by inserting the missing key again. Run each command separately.
+
+**F1 — Reduce to two stores:**
 
 ```powershell
 Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1","kv2"]}' | ConvertTo-Json -Depth 10
 ```
 
 ```powershell
-Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"} | ConvertTo-Json -Depth 10
+$d=Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"}; $d | ConvertTo-Json -Depth 10; if ($d.total -lt 3000 -or $d.counts.kv1 -le 0 -or $d.counts.kv2 -le 0) { throw "FAIL: keys missing after 3-to-2 migration" } else { Write-Host "PASS: 2-node distribution contains at least 3000 keys" }
 ```
+
+```powershell
+$good=0; $bad=0; 1,500,1000,2000,3000 | ForEach-Object { $i=$_; try { $r=Invoke-RestMethod -Uri "http://localhost:8000/hw3_test_key_$i" -Method Get -ErrorAction Stop; if ($r.value -eq "test_value_$i") { $good++; Write-Host "PASS: key $i" } else { $bad++; Write-Host "FAIL: wrong value for key $i" } } catch { $bad++; Write-Host "FAIL: key $i not readable: $_" } }; if ($bad -gt 0) { throw "STOP: failed 2-node key checks" }
+```
+
+**F2 — Reduce to one store:**
 
 ```powershell
 Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1"]}' | ConvertTo-Json -Depth 10
 ```
 
 ```powershell
-Invoke-RestMethod -Uri "http://localhost:8000/hw3_test_key_3000" -Method Get | ConvertTo-Json -Depth 10
+$d=Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"}; $d | ConvertTo-Json -Depth 10; if ($d.total -lt 3000 -or $d.counts.kv1 -lt 3000) { throw "FAIL: keys missing after 2-to-1 migration" } else { Write-Host "PASS: kv1 contains at least 3000 keys" }
 ```
+
+```powershell
+$good=0; $bad=0; 1,500,1000,2000,3000 | ForEach-Object { $i=$_; try { $r=Invoke-RestMethod -Uri "http://localhost:8000/hw3_test_key_$i" -Method Get -ErrorAction Stop; if ($r.value -eq "test_value_$i") { $good++; Write-Host "PASS: key $i" } else { $bad++; Write-Host "FAIL: wrong value for key $i" } } catch { $bad++; Write-Host "FAIL: key $i not readable: $_" } }; if ($bad -gt 0) { throw "STOP: failed 1-node key checks" }
+```
+
+**F3 — Restore three stores:**
 
 ```powershell
 Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1","kv2","kv3"]}' | ConvertTo-Json -Depth 10
 ```
 
 ```powershell
-Invoke-RestMethod -Uri "http://localhost:8000/hw3_test_key_3000" -Method Get | ConvertTo-Json -Depth 10
+$d=Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"}; $d | ConvertTo-Json -Depth 10; if ($d.total -lt 3000 -or $d.counts.kv1 -le 0 -or $d.counts.kv2 -le 0 -or $d.counts.kv3 -le 0) { throw "FAIL: distribution after restoring 3 nodes" } else { Write-Host "PASS: keys present across all 3 stores" }
 ```
 
 ```powershell
-Invoke-RestMethod -Uri "http://localhost:8000/_admin/distribution" -Headers @{"X-Admin-Token"="local-dev-token"} | ConvertTo-Json -Depth 10
+$good=0; $bad=0; 1,500,1000,2000,3000 | ForEach-Object { $i=$_; try { $r=Invoke-RestMethod -Uri "http://localhost:8000/hw3_test_key_$i" -Method Get -ErrorAction Stop; if ($r.value -eq "test_value_$i") { $good++; Write-Host "PASS: key $i" } else { $bad++; Write-Host "FAIL: wrong value for key $i" } } catch { $bad++; Write-Host "FAIL: key $i not readable: $_" } }; if ($bad -gt 0) { throw "STOP: failed restored 3-node key checks" }
 ```
+
+**Optional stronger verification:** Repeat the 3,000-key GET loop from Section E after F3 to check every key rather than five samples. The distribution endpoint measures counts, but only GET checks validate values.
 
 ## G. Tests
 
@@ -162,7 +200,7 @@ python -m pip install -r requirements-dev.txt
 python -m pytest -q test_hash_ring.py test_integration_hw3.py
 ```
 
-**Note:** The integration test ends with one active node, so re-enable all three afterward:
+**Note:** The integration test may change the active membership and its own test data. Re-enable all three afterward. If pytest fails, retain the output and investigate before continuing:
 
 ```powershell
 Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -ContentType "application/json" -Headers @{"X-Admin-Token"="local-dev-token"} -Body '{"nodes":["kv1","kv2","kv3"]}' | ConvertTo-Json -Depth 10
@@ -170,10 +208,10 @@ Invoke-RestMethod -Uri "http://localhost:8000/_admin/membership" -Method Post -C
 
 ## H. Throughput and latency: 1, 2, and 3 stores
 
-**Existing benchmark data is already included in this ZIP.** If you want a completely new run in the transcript, first preserve historical files, because `benchmark_hw3.py` overwrites `results/benchmark.csv` and `plot_hw3.py` overwrites the PNGs.
+**Existing benchmark data may already be present in your project.** If you want a completely new run in the transcript, first preserve historical files, because `benchmark_hw3.py` overwrites `results/benchmark.csv` and `plot_hw3.py` overwrites the PNGs.
 
 ```powershell
-New-Item -ItemType Directory -Force -Path ".\results\historical_backup" | Out-Null; Copy-Item ".\results\benchmark.csv" ".\results\historical_backup\benchmark.csv" -Force; Copy-Item ".\results\*.png" ".\results\historical_backup\" -Force
+New-Item -ItemType Directory -Force -Path ".\results\historical_backup" | Out-Null; if (Test-Path ".\results\benchmark.csv") { Copy-Item ".\results\benchmark.csv" ".\results\historical_backup\benchmark.csv" -Force }; Get-ChildItem ".\results" -Filter "*.png" -ErrorAction SilentlyContinue | Copy-Item -Destination ".\results\historical_backup" -Force
 ```
 
 ```powershell
@@ -196,9 +234,12 @@ Get-ChildItem ".\results\*.png" | Select-Object Name,Length
 Invoke-RestMethod -Uri "http://localhost:8000/health" | ConvertTo-Json -Depth 10
 ```
 
-The fresh benchmark results may differ from the historical report. If so, **update the report to match the new CSV** rather than presenting old numbers as new results.
+The benchmark should produce 1-, 2-, and 3-node measurements. Check for errors and ensure the CSV contains all three configurations. The fresh benchmark results may differ from the historical report. If so, **update the report to match the new CSV** rather than presenting old numbers as new results.
 
 ## I. Stop recording and preserve the history
+
+**If you are resuming a previous transcript:** `-Append` preserves earlier evidence, including earlier mistakes. Do not delete or rewrite real failures. If any test fails, resolve it and record a successful rerun, with a brief explanation in the report. A new Docker Compose project has separate volumes, so old keys may not exist in the new deployment.
+
 
 ```powershell
 Stop-Transcript
